@@ -104,6 +104,22 @@ app.post('/api/persons', (req, res) => {
   }
 })
 
+app.put('/api/persons/:id', (req, res) => {
+  const idx = Number(req.params.id)
+  const body = req.body
+  console.log(body)
+  const updated = {
+    name: body.name,
+    number: body.number,
+    id: idx
+  }
+  console.log('put', updated.number)
+  persons = persons.map( p => p.id === idx ? updated : p)
+  //console.log('put', persons)
+
+  res.json(persons)
+})
+
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
