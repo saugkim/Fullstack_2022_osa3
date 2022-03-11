@@ -1,4 +1,4 @@
-const { response } = require('express')
+
 require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
@@ -12,40 +12,15 @@ app.use(cors())
 app.use(express.static('build'))
 
 //app.use(morgan('tiny'))
-morgan.token('bodyJSON', req => JSON.stringify(req.body || {}));
+morgan.token('bodyJSON', req => JSON.stringify(req.body || {}))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :bodyJSON'))
-
-
-let persons = [
-  {
-    "name": "Arto Hellas",
-    "number": "123123",
-    "id": 1
-  },
-  {
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523",
-    "id": 2
-  },
-  {
-    "name": "Dan Abramov",
-    "number": "12-43-234234",    
-    "id": 3
-  },
-  {
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122",
-    "id": 4
-  }
-]
-  
 
 app.get('/api/persons', (req, res) => {
   Person
     .find({})
     .then(returned => {
       res.json(returned)
-    })  
+    })
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
@@ -68,13 +43,13 @@ app.get('/api/persons/:id', (req, res, next) => {
   //   })
   // } else {
   //   res.json(person)
-  // }  
+  // }
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person
     .findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -82,7 +57,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 // app.delete('/api/persons/:id', (req, res) => {
 //   const id = Number(req.params.id)
 //   persons = persons.filter(person => person.id !== id)
-//   res.status(204).end()  
+//   res.status(204).end()
 // })
 
 app.get('/info', (req, res) => {
@@ -93,15 +68,11 @@ app.get('/info', (req, res) => {
     })
 })
 
-const getId = () => {
-  return Math.floor(Math.random() * 100000)
-}
-
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
-  
+
   Person
-    .find({name: body.name})
+    .find({ name: body.name })
     .then(result => {
       if(result.length === 0) {
         const person = new Person ({
@@ -111,52 +82,52 @@ app.post('/api/persons', (req, res, next) => {
         person
           .save()
           .then(returned => res.json(returned))
-          .catch(error => next(error))    
+          .catch(error => next(error))
       } else {
         res.status(400).json({
           error: 'name must be unique'
-        })    
+        })
       }
     })
 })
 
-  // const body = req.body
-  // if (!body.name || !body.number) {
-  //   return res.status(400).json({
-  //     error : 'value is missing'
-  //   })
-  // }
-  // const found = persons.find(p => p.name === body.name)
-  // if (found === undefined){
-  //   console.log('person not found, added ok')
-  //   const person = {
-  //     name: body.name,
-  //     number: body.number,
-  //     id: getId()
-  //   }
-  //   persons = persons.concat(person)
-  //   res.json(person)
-  // } else {
-  //   console.log('status 400')
-  //   res.status(400).json({
-  //     error: 'name must be unique'
-  //   })
-  // }
+// const body = req.body
+// if (!body.name || !body.number) {
+//   return res.status(400).json({
+//     error : 'value is missing'
+//   })
+// }
+// const found = persons.find(p => p.name === body.name)
+// if (found === undefined){
+//   console.log('person not found, added ok')
+//   const person = {
+//     name: body.name,
+//     number: body.number,
+//     id: getId()
+//   }
+//   persons = persons.concat(person)
+//   res.json(person)
+// } else {
+//   console.log('status 400')
+//   res.status(400).json({
+//     error: 'name must be unique'
+//   })
+// }
 
 
 app.put('/api/persons/:id', (req, res, next) => {
-  
-  const {name, number} = req.body
+
+  const { name, number } = req.body
   Person
-    .findByIdAndUpdate(req.params.id, 
-      { name, number }, 
+    .findByIdAndUpdate(req.params.id,
+      { name, number },
       { new: true, runValidators: true, context: 'query' }
     )
     .then(returned => {
       console.log(returned)
       res.json(returned)
     })
-    .catch(error =>{
+    .catch(error => {
       next(error)
     })
   // const idx = Number(req.params.id)

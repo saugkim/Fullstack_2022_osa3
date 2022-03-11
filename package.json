@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../puhelinluettelo-front/ && npm run build && cp -r build ../puhelinluettelo-backend",
     "deploy": "git push heroku mater",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "keywords": [
     "express",
@@ -26,6 +27,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^8.10.0",
     "nodemon": "^2.0.15"
   }
 }
